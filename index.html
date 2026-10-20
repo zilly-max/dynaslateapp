@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>DynaSlateApp Business Manager</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f1f5f9;
+    color: #1e293b;
+}
+
+header {
+    background: #172554;
+    color: white;
+    padding: 22px;
+}
+
+header h1 {
+    margin: 0 0 8px;
+}
+
+header p {
+    margin: 0;
+    color: #dbeafe;
+}
+
+nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 15px;
+    background: white;
+}
+
+button {
+    border: none;
+    background: #1d4ed8;
+    color: white;
+    padding: 12px 15px;
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #1e40af;
+}
+
+main {
+    max-width: 1100px;
+    margin: auto;
+    padding: 20px;
+}
+
+.section {
+    display: none;
+}
+
+.section.active {
+    display: block;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+}
+
+.card, .panel {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 18px;
+    box-shadow: 0 2px 8px #0000000a;
+}
+
+.card h3 {
+    font-size: 14px;
+    color: #64748b;
+}
+
+.amount {
+    color: #1d4ed8;
+    font-size: 23px;
+    font-weight: bold;
+    overflow-wrap: anywhere;
+}
+
+input {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0 16px;
+    border: 1px solid #cbd5e1;
+    border-radius: 7px;
+}
+
+label {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.notice {
+    background: #dbeafe;
+    padding: 14px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.table-wrap {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+th, td {
+    text-align: left;
+    padding: 11px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+th {
+    background: #eff6ff;
+}
+
+.small-button {
+    padding: 7px 10px;
+    background: #b91c1c;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    color: #64748b;
+}
+
+@media (max-width: 600px) {
+    main {
+        padding: 12px;
+    }
+
+    header {
+        padding: 18px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>DynaSlateApp</h1>
+    <p>Your Business Management Centre</p>
+</header>
+
+<nav>
+    <button onclick="showSection('dashboard')">Dashboard</button>
+    <button onclick="showSection('customers')">Customers</button>
+    <button onclick="showSection('sales')">Sales</button>
+    <button onclick="showSection('payments')">Payments</button>
+    <button onclick="showSection('products')">Products</button>
+    <button onclick="showSection('reports')">Reports</button>
+</nav>
+
+<main>
+
+<div class="notice">
+    Welcome to DynaSlateApp! Manage your business from one place.
+</div>
+
+<section id="dashboard" class="section active">
+    <h2>Business Dashboard</h2>
+
+    <div class="cards">
+        <div class="card">
+            <h3>Total Sales</h3>
+            <div class="amount" id="totalSales">₦0.00</div>
+        </div>
+
+        <div class="card">
+            <h3>Payments Received</h3>
+            <div class="amount" id="totalPayments">₦0.00</div>
+        </div>
+
+        <div class="card">
+            <h3>Outstanding Balance</h3>
+            <div class="amount" id="totalBalance">₦0.00</div>
+        </div>
+
+        <div class="card">
+            <h3>Total Customers</h3>
+            <div class="amount" id="totalCustomers">0</div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <h3>Getting Started</h3>
+        <p>1. Add your customers.</p>
+        <p>2. Register your products.</p>
+        <p>3. Record sales and payments.</p>
+        <p>4. Check your business reports.</p>
+    </div>
+</section>
+
+<section id="customers" class="section">
+    <h2>Customer Management</h2>
+
+    <div class="panel">
+        <form id="customerForm">
+            <label for="customerName">Customer Name</label>
+            <input id="customerName" required
+                   placeholder="Enter customer name">
+
+            <label for="customerPhone">Phone Number</label>
+            <input id="customerPhone"
+                   placeholder="Enter phone number">
+
+            <button type="submit">Add Customer</button>
+        </form>
+    </div>
+
+    <div class="panel">
+        <h3>Customer List</h3>
+        <div id="customerList">No customers added yet.</div>
+    </div>
+</section>
+
+<section id="sales" class="section">
+    <h2>Sales Management</h2>
+
+    <div class="panel">
+        <form id="saleForm">
+            <label for="saleItem">Product or Item</label>
+            <input id="saleItem" required
+                   placeholder="Enter item sold">
+
+            <label for="saleAmount">Sale Amount (₦)</label>
+            <input id="saleAmount" type="number"
+                   min="0.01" step="0.01" required>
+
+            <label for="salePaid">Amount Paid (₦)</label>
+            <input id="salePaid" type="number"
+                   min="0" step="0.01" value="0" required>
+
+            <button type="submit">Record Sale</button>
+        </form>
+    </div>
+
+    <div class="panel">
+        <h3>Sales History</h3>
+        <div id="salesList">No sales recorded yet.</div>
+    </div>
+</section>
+
+<section id="payments" class="section">
+    <h2>Payment Tracking</h2>
+
+    <div class="panel">
+    <form id="paymentForm">
+        <label for="paymentCustomer">Customer Name</label>
+        <input id="paymentCustomer" required>
+
+        <label for="paymentAmount">Payment Amount (₦)</label>
+        <input id="paymentAmount" type="number" min="1" step="0.01" required>
+
+        <button type="submit">Record Payment</button>
+    </form>
+
+    <p>Track the amount received and the remaining balance on each sale.</p>
+        <div id="paymentsList">No payments recorded yet.</div>
+    </div>
+</section>
+
+<section id="products" class="section">
+    <h2>Product and Stock Management</h2>
+
+    <div class="panel">
+        <form id="productForm">
+            <label for="productName">Product Name</label>
+            <input id="productName" required
+                   placeholder="Enter product name">
+
+            <label for="productPrice">Selling Price (₦)</label>
+            <input id="productPrice" type="number"
+                   min="0.01" step="0.01" required>
+
+            <label for="productStock">Stock Quantity</label>
+            <input id="productStock" type="number"
+                   min="0" step="1" required>
+
+            <button type="submit">Add Product</button>
+        </form>
+    </div>
+
+    <div class="panel">
+        <h3>Product Inventory</h3>
+        <div id="productList">No products added yet.</div>
+    </div>
+</section>
+
+<section id="reports" class="section">
+    <h2>Business Reports</h2>
+
+    <div class="panel">
+        <h3>Business Summary</h3>
+        <p id="reportSales">Total Sales: ₦0.00</p>
+        <p id="reportPayments">Payments Received: ₦0.00</p>
+        <p id="reportBalance">Outstanding Balance: ₦0.00</p>
+        <p id="reportCustomers">Total Customers: 0</p>
+        <p id="reportProducts">Products Registered: 0</p>
+    </div>
+</section>
+
+</main>
+
+<footer>
+    DynaSlateApp Business Manager
+</footer>
+
+<script>
+"use strict";
+
+const STORAGE_KEY = "dynaslate_business_data_v1";
+
+let customers = [];
+let sales = [];
+let products = [];
+
+function money(value) {
+    return Number(value).toLocaleString("en-NG", {
+        style: "currency",
+        currency: "NGN"
+    });
+}
+
+function escapeHTML(value) {
+    return String(value).replace(/[&<>"']/g, function(char) {
+        const entities = {
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+        };
+
+        return entities[char];
+    });
+}
+
+function saveData() {
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+            customers: customers,
+            sales: sales,
+            products: products
+        }));
+    } catch (error) {
+        alert("The browser could not save your data. Please check your browser settings.");
+    }
+}
+
+function loadData() {
+    try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+
+        if (saved) {
+            const data = JSON.parse(saved);
+
+            customers = Array.isArray(data.customers) ? data.customers : [];
+            sales = Array.isArray(data.sales) ? data.sales : [];
+            products = Array.isArray(data.products) ? data.products : [];
+        }
+    } catch (error) {
+        customers = [];
+        sales = [];
+        products = [];
+        alert("Saved data could not be read. Starting with empty records.");
+    }
+}
+
+function showSection(id) {
+    document.querySelectorAll(".section").forEach(function(section) {
+        section.classList.remove("active");
+    });
+
+    document.getElementById(id).classList.add("active");
+}
+
+function makeTable(headers, rows) {
+    if (rows.length === 0) {
+        return "<p>No records available yet.</p>";
+    }
+
+    return '<div class="table-wrap"><table><thead><tr>' +
+        headers.map(function(header) {
+            return "<th>" + escapeHTML(header) + "</th>";
+        }).join("") +
+        "</tr></thead><tbody>" +
+        rows.map(function(row) {
+            return "<tr>" + row.map(function(cell) {
+                return "<td>" + cell + "</td>";
+            }).join("") + "</tr>";
+        }).join("") +
+        "</tbody></table></div>";
+}
+
+function render() {
+    const totalSales = sales.reduce(function(sum, sale) {
+        return sum + sale.amount;
+    }, 0);
+
+    const totalPayments = sales.reduce(function(sum, sale) {
+        return sum + sale.paid;
+    }, 0);
+
+    const balance = totalSales - totalPayments;
+
+    document.getElementById("totalSales").textContent = money(totalSales);
+    document.getElementById("totalPayments").textContent = money(totalPayments);
+    document.getElementById("totalBalance").textContent = money(balance);
+    document.getElementById("totalCustomers").textContent = customers.length;
+
+    document.getElementById("customerList").innerHTML = makeTable(
+        ["Name", "Phone"],
+        customers.map(function(customer) {
+            return [
+                escapeHTML(customer.name),
+                escapeHTML(customer.phone || "Not provided")
+            ];
+        })
+    );
+
+    document.getElementById("salesList").innerHTML = makeTable(
+        ["Date", "Item", "Amount", "Paid", "Balance"],
+        sales.map(function(sale) {
+            return [
+                escapeHTML(sale.date),
+                escapeHTML(sale.item),
+                money(sale.amount),
+                money(sale.paid),
+                money(sale.amount - sale.paid)
+            ];
+        })
+    );
+
+    document.getElementById("paymentsList").innerHTML = makeTable(
+        ["Item", "Received", "Outstanding"],
+        sales.map(function(sale) {
+            return [
+                escapeHTML(sale.item),
+                money(sale.paid),
+                money(sale.amount - sale.paid)
+            ];
+        })
+    );
+
+    document.getElementById("productList").innerHTML = makeTable(
+        ["Product", "Selling Price", "Stock"],
+        products.map(function(product) {
+            return [
+                escapeHTML(product.name),
+                money(product.price),
+                String(product.stock)
+            ];
+        })
+    );
+
+    document.getElementById("reportSales").textContent =
+        "Total Sales: " + money(totalSales);
+
+    document.getElementById("reportPayments").textContent =
+        "Payments Received: " + money(totalPayments);
+
+    document.getElementById("reportBalance").textContent =
+        "Outstanding Balance: " + money(balance);
+
+    document.getElementById("reportCustomers").textContent =
+        "Total Customers: " + customers.length;
+
+    document.getElementById("reportProducts").textContent =
+        "Products Registered: " + products.length;
+}
+
+document.getElementById("customerForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const name = document.getElementById("customerName").value.trim();
+    const phone = document.getElementById("customerPhone").value.trim();
+
+    if (!name) {
+        alert("Please enter the customer's name.");
+        return;
+    }
+
+    customers.push({
+        name: name,
+        phone: phone
+    });
+
+    saveData();
+    render();
+    this.reset();
+
+    alert("Customer added successfully!");
+});
+
+document.getElementById("saleForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const item = document.getElementById("saleItem").value.trim();
+    const amount = Number(document.getElementById("saleAmount").value);
+    const paid = Number(document.getElementById("salePaid").value);
+
+    if (!item || !Number.isFinite(amount) || amount <= 0 ||
+        !Number.isFinite(paid) || paid < 0 || paid > amount) {
+        alert("Enter a valid item, sale amount, and payment. Payment cannot exceed the sale amount.");
+        return;
+    }
+
+    sales.push({
+        item: item,
+        amount: amount,
+        paid: paid,
+        date: new Date().toLocaleDateString()
+    });
+
+    saveData();
+    render();
+    this.reset();
+
+    alert("Sale recorded successfully!");
+});
+
+document.getElementById("productForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const name = document.getElementById("productName").value.trim();
+    const price = Number(document.getElementById("productPrice").value);
+    const stock = Number(document.getElementById("productStock").value);
+
+    if (!name || !Number.isFinite(price) || price <= 0 ||
+        !Number.isInteger(stock) || stock < 0) {
+        alert("Enter a valid product name, price, and whole-number stock quantity.");
+        return;
+    }
+
+    products.push({
+        name: name,
+        price: price,
+        stock: stock
+    });
+
+    saveData();
+    render();
+    this.reset();
+
+    alert("Product added successfully!");
+});
+
+loadData();
+render();
+</script>
+
+</body>
+</html>
